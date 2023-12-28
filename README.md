@@ -11,12 +11,12 @@
 
 2. **Instala las Dependencias:**
    ```bash
-   yarn install
+   npm install
    ```
 
 3. **¡Juega!**
    ```bash
-   yarn start
+   npm run start
    ```
 
 ¡Y listo! ¡Prepárate para sumergirte en una experiencia de juego única con 2048! 🎮✨
