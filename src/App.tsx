@@ -25,8 +25,7 @@ export const App = () => {
       <Game key={date.toISOString()} />
       <div>
         <p>
-          <b>You can find a video tutorial and
-          code here:
+          <b>You can find a video tutorial and code here: </b>
         </p>
         <ul>
           <li>

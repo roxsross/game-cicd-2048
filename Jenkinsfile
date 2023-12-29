@@ -2,6 +2,8 @@ pipeline {
     agent any
     environment {
         DOCKER_HUB_LOGIN = credentials('docker-hub')
+        VERSION = sh(script: 'jq --raw-output .version package.json', returnStdout: true).trim()
+        REPO= sh(script: 'basename `git rev-parse --show-toplevel`', returnStdout: true).trim()
     }
     stages { //
         stage('Install Dependencies') {
@@ -22,6 +24,7 @@ pipeline {
                 stage('Docker Build') {
                     steps {
                         script {
+                            sh 'echo "este es ${REPO}"'
                             sh 'docker build -t prueba .'
                         }
                     }
