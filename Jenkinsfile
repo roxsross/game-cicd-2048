@@ -70,8 +70,8 @@ pipeline {
                 stage('snyk'){
                     agent {
                         docker {
-                            image 'snyk/snyk-cli'
-                            args '-u root:root -v ${WORKSPACE}:/src'
+                            image 'snyk/snyk:node'
+                            args '--entrypoint='' -u root:root -v ${WORKSPACE}:/src'
                         }
                     }                     
                     steps {
