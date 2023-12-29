@@ -39,7 +39,7 @@ pipeline {
                         }
                     }
                 }
-                stage('Audit-Scan') {
+                stage('NPMAudit-Scan') {
                     agent {
                         docker {
                             image 'node:16-alpine'
@@ -77,7 +77,7 @@ pipeline {
                     }                     
                     steps {
                         script {
-                            sh "snyk test --json --severity-threshold=high --print-deps --print-deps-uses --print-vulnerabilities --print-trace --print-all-environment --json-file-output=report_snyk.json"
+                            sh "snyk test --json --file=package.json --severity-threshold=high --print-deps --print-deps-uses --print-vulnerabilities --print-trace --print-all-environment --json-file-output=report_snyk.json"
                             stash includes: 'report_snyk.json', name: 'report_snyk.json'
                         }
                     }
@@ -111,7 +111,7 @@ pipeline {
             }
         }
 
-        stage('Trivy Scan') {
+        stage('Trivy-Scan') {
             agent {
                 docker {
                     image 'aquasec/trivy:0.48.1'
