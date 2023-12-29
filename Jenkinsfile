@@ -71,7 +71,7 @@ pipeline {
                     agent {
                         docker {
                             image 'snyk/snyk:node'
-                            args '--entrypoint='' -u root:root -v ${WORKSPACE}:/src'
+                            args '--entrypoint="" -u root:root -v ${WORKSPACE}:/src'
                         }
                     }                     
                     steps {
