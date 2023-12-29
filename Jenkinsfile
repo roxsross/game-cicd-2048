@@ -9,7 +9,7 @@ pipeline {
             agent {
                 docker {
                     image 'node:16-alpine'
-                    args '${DOCKER_ARGS}'
+                    args '$DOCKER_ARGS'
                 }
             }
             steps {
