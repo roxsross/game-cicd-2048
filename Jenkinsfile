@@ -14,9 +14,12 @@ pipeline {
     stages {
         stage('Install Dependencies') {
             steps {
-                securityScript.installDependencies()
+                script {
+                    securityScript.installDependencies()
+                }
             }
         }
+
         stage('Security SAST') {
             parallel {
                 stage('Gitleaks-Scan') {
