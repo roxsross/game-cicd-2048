@@ -120,6 +120,7 @@ pipeline {
             steps {
                 script {
                     sh "trivy image --format json --output /src/report_trivy.json $REGISTRY/$REPO:$VERSION"
+                    stash includes: 'report_trivy.json', name: 'report_trivy.json'
                 }
             }
         }
@@ -143,11 +144,18 @@ pipeline {
             }
         } 
         stage('Security DAST') {
+            agent {
+                docker {
+                    image 'ghcr.io/zaproxy/zaproxy:stable'
+                    args '-u root -v $(pwd):/zap/wrk/:rw'
+                }
+            }            
             steps {
                 script {
                     sh '''
-                        echo "prueba"
+                        zap-full-scan.py -t https://roxs.295devops.com -g gen.conf -r testreport.html
                     '''
+                    stash includes: 'testreport.html', name: 'testreport.html'
                 }
             }
         }  
