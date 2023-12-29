@@ -141,7 +141,7 @@ pipeline {
                         steps {
                             script {
                                 sh '''
-                                    echo "prueba
+                                    echo "prueba"
                                 '''
                             }
                         }
