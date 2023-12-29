@@ -88,7 +88,7 @@ pipeline {
                     agent {
                         docker {
                             image 'public.ecr.aws/roxsross/horusec:v2.9.0'
-                            args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/src'
+                            args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock -v ${WORKSPACE}:/src'
                         }
                     }                     
                     steps {
@@ -147,7 +147,7 @@ pipeline {
             agent {
                 docker {
                     image 'ghcr.io/zaproxy/zaproxy:stable'
-                    args '-u root -v $(pwd):/zap/wrk/:rw'
+                    args '-u root -v ${WORKSPACE}:/zap/wrk/:rw'
                 }
             }            
             steps {
