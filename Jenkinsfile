@@ -33,7 +33,7 @@ pipeline {
                     }                    
                     steps {
                         script {
-                            sh "gitleaks detect --verbose --source . -f json -r /src/report_gitleaks.json"
+                            sh "gitleaks detect --verbose --source . -f json -r report_gitleaks.json"
                         }
                     }
                 }
