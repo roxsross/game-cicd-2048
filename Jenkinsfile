@@ -67,22 +67,17 @@ pipeline {
                         }
                     }
                 }    
-                stage('Njscan-Scan') {
+                stage('snyk'){
                     agent {
                         docker {
-                            image 'python:3.8-alpine'
+                            image 'snyk/snyk-cli'
                             args '-u root:root -v ${WORKSPACE}:/src'
                         }
                     }                     
                     steps {
                         script {
-                            sh ''' 
-                                pip install --root-user-action=ignore --upgrade njsscan >/dev/null
-                                njsscan --exit-warning -v . --json -o src/report_njsscan.json
-                            '''
-                        }
-                    }
-                }   
+                            sh "snyk test --json --file=package.json --severity-threshold=high --print-deps --print-deps-uses --print-vulnerabilities --print-trace --print-all-environment"
+                
                 stage('Horusec-Scan') {                   
                     steps {
                         script {
