@@ -24,7 +24,7 @@ pipeline {
                 stage('Docker Build') {
                     steps {
                         script {
-                            sh 'echo "este es ${REPO}"'
+                            sh 'echo "REPO= ${REPO}"'
                             sh 'docker build -t prueba .'
                         }
                     }
@@ -34,6 +34,7 @@ pipeline {
                         docker {
                             image 'aquasec/trivy:0.48.1'
                             args '-u root -v /var/run/docker.sock:/var/run/docker.sock -v ${WORKSPACE}:/src'
+                            entrypoint ''
                         }
                     }
                     steps {
