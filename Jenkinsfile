@@ -48,7 +48,6 @@ pipeline {
                         script {
                             sh "npm install -g retire"
                             sh "retire --outputformat json --outputpath /src/report_retire.json"
-                            sh "retire --outputformat json --outputpath report_retire.json"
                             sh "ls -lrt"
                         }
                     }
@@ -88,7 +87,7 @@ pipeline {
                     agent {
                         docker {
                             image 'public.ecr.aws/roxsross/horusec:v2.9.0'
-                            args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock -v ${WORKSPACE}:/src'
+                            args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock -v ${pwd}:/src'
                         }
                     }                     
                     steps {
