@@ -48,6 +48,8 @@ pipeline {
                         script {
                             sh "npm install -g retire"
                             sh "retire --outputformat json --outputpath /src/report_retire.json"
+                            sh "retire --outputformat json --outputpath report_retire.json"
+                            sh "ls -lrt"
                         }
                     }
                 }
@@ -61,6 +63,7 @@ pipeline {
                     steps {
                         script {
                             sh "semgrep ci --json --exclude=package-lock.json --output /src/report_semgrep.json --config auto --config p/ci"
+                            sh "ls -lrt"
                         }
                     }
                 }    
@@ -74,8 +77,9 @@ pipeline {
                     steps {
                         script {
                             sh ''' 
-                                pip3 install --upgrade njsscan
+                                pip3 install --upgrade njsscan >/dev/null
                                 njsscan -o /src/report_njsscan.json /src
+                                ls -lrt
                             '''
                         }
                     }
@@ -91,6 +95,7 @@ pipeline {
                         script {
                             sh ''' 
                                 horusec start -p /src -P "$(pwd)/src" -o="json" -O=src/report_horusec.json
+                                ls -lrt
                             '''
                         }
                     }
