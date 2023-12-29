@@ -78,9 +78,9 @@ pipeline {
                         script {
                             sh ''' 
                                 pip3 install --upgrade njsscan >/dev/null
-                                njsscan --exit-warning -o /src/report_njsscan.json /src    
+                                njsscan --exit-warning . --json -o src/njsscan.json
                             '''
-                            stash includes: 'report_njsscan.json', name: 'report_njsscan.json'
+                            stash includes: 'njsscan.json', name: 'njsscan.json'
                         }
                     }
                 }   
