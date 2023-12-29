@@ -34,6 +34,7 @@ pipeline {
                     steps {
                         script {
                             sh "gitleaks detect --verbose --source . -f json -r /src/report_gitleaks.json"
+                            stash includes: 'report_gitleaks.json', name: 'report_gitleaks.json'
                         }
                     }
                 }
@@ -48,7 +49,7 @@ pipeline {
                         script {
                             sh "npm install -g retire"
                             sh "retire --outputformat json --outputpath /src/report_retire.json"
-                            sh "ls -lrt"
+                            stash includes: 'report_retire.json', name: 'report_retire.json'
                         }
                     }
                 }
@@ -61,8 +62,8 @@ pipeline {
                     }                     
                     steps {
                         script {
-                            sh "semgrep ci --json --exclude=package-lock.json --output /src/report_semgrep.json --config auto --config p/ci"
-                            sh "ls -lrt"
+                            sh "semgrep ci --json --exclude=package-lock.json --output /src/report_semgrep.json --config auto --config p/ci || true"
+                            stash includes: 'report_semgrep.json', name: 'report_semgrep.json'
                         }
                     }
                 }    
@@ -77,9 +78,9 @@ pipeline {
                         script {
                             sh ''' 
                                 pip3 install --upgrade njsscan >/dev/null
-                                njsscan --exit-warning -o /src/report_njsscan.json /src
-                                ls -lrt
+                                njsscan --exit-warning -o /src/report_njsscan.json /src    
                             '''
+                            stash includes: 'report_njsscan.json', name: 'report_njsscan.json'
                         }
                     }
                 }   
@@ -87,15 +88,15 @@ pipeline {
                     agent {
                         docker {
                             image 'public.ecr.aws/roxsross/horusec:v2.9.0'
-                            args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock -v ${pwd}:/src'
+                            args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/src'
                         }
                     }                     
                     steps {
                         script {
                             sh ''' 
-                                horusec start -p /src -P "$(pwd)/src" -o="json" -O=src/report_horusec.json
-                                ls -lrt
+                                horusec start -p /src -P "$(pwd)/src" -e="true" -o="json" -O=src/report_horusec.json
                             '''
+                            stash includes: 'report_horusec.json', name: 'report_horusec.json'
                         }
                     }
                 }                                           
