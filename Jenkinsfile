@@ -126,14 +126,27 @@ pipeline {
                 }
             }
         }
-        stage('Docker Push') {
-            steps {
-                script {
-                    sh '''
-                        docker login -u $DOCKER_HUB_LOGIN_USR -p $DOCKER_HUB_LOGIN_PSW
-                        docker push $REGISTRY/$REPO:$VERSION
-                    '''
-                }
+        stage('Hub&Report') {
+                    parallel {        
+                        stage('Docker Push') {
+                            steps {
+                                script {
+                                    sh '''
+                                        docker login -u $DOCKER_HUB_LOGIN_USR -p $DOCKER_HUB_LOGIN_PSW
+                                        docker push $REGISTRY/$REPO:$VERSION
+                                    '''
+                                }
+                            }
+                        } 
+                    stage('Upload Reports') {
+                        steps {
+                            script {
+                                sh '''
+                                    echo "prueba
+                                '''
+                            }
+                        }
+                    }
             }
         } 
         stage('Deploy') {
