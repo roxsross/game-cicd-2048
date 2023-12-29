@@ -39,7 +39,7 @@ pipeline {
                         }
                     }
                 }
-                stage('Retire-Scan') {
+                stage('Audit-Scan') {
                     agent {
                         docker {
                             image 'node:16-alpine'
@@ -49,8 +49,8 @@ pipeline {
                     steps {
                         script {
                             sh "npm install -g retire"
-                            sh "retire --outputformat json --outputpath /src/report_retire.json"
-                            stash includes: 'report_retire.json', name: 'report_retire.json'
+                            sh "npm audit --registry=https://registry.npmjs.org -audit-level=moderate --json > report_npmaudit.json || true"
+                            stash includes: 'report_npmaudit.json', name: 'report_npmaudit.json'
                         }
                     }
                 }
@@ -68,7 +68,7 @@ pipeline {
                         }
                     }
                 }    
-                stage('snyk'){
+                stage('Snyk-Scan'){
                     agent {
                         docker {
                             image 'snyk/snyk:node'
