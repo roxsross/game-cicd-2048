@@ -33,7 +33,7 @@ pipeline {
                     agent {
                         docker {
                             image 'aquasec/trivy:0.48.1'
-                            args '-u root -v /var/run/docker.sock:/var/run/docker.sock -v ${WORKSPACE}:/src --entrypoint='''
+                            args '--entrypoint="" -u root -v /var/run/docker.sock:/var/run/docker.sock -v ${WORKSPACE}:/src'
                         }
                     }
                     steps {
