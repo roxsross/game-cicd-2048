@@ -103,7 +103,7 @@ pipeline {
                                         -P "$(pwd)/src" \
                                         -e="true" \
                                         -o="json" \
-                                        -O=src/report_horusec.json || true
+                                        -O=src/report_horusec.json
                                 '''
                                 stash includes: 'report_horusec.json', name: 'report_horusec.json'
                             }
