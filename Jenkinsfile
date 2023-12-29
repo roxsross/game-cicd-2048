@@ -6,6 +6,7 @@ pipeline {
         VERSION = sh(script: 'jq --raw-output .version package.json', returnStdout: true).trim()
         REPO = sh(script: 'basename `git rev-parse --show-toplevel`', returnStdout: true).trim()
         REGISTRY = "roxsross12"
+        SNYK_CREDENTIALS = credentials('snyk-token')
     }
 
     stages {
@@ -71,7 +72,7 @@ pipeline {
                     agent {
                         docker {
                             image 'snyk/snyk:node'
-                            args '--entrypoint="" -u root:root -v ${WORKSPACE}:/src'
+                            args '--entrypoint="" -e SNYK_TOKEN=$SNYK_CREDENTIALS -u root:root -v ${WORKSPACE}:/src'
                         }
                     }                     
                     steps {
