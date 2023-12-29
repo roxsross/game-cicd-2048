@@ -24,8 +24,7 @@ pipeline {
                 stage('Docker Build') {
                     steps {
                         script {
-                            sh 'echo "REPO= ${REPO}"'
-                            sh 'docker build -t prueba .'
+                            sh 'docker build -t $REPO:$VERSION .'
                         }
                     }
                 }
@@ -38,8 +37,8 @@ pipeline {
                     }
                     steps {
                         script {
-                            sh 'trivy image --format json --output /src/report_trivy.json python:alpine'
-                            sh 'ls -lrt'
+                            build 'Docker Build'
+                            sh 'trivy image --format json --output /src/report_trivy.json $REPO:$VERSION'
                         }
                     }
                 }
