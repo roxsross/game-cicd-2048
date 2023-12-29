@@ -5,11 +5,24 @@ pipeline {
         DOCKER_HUB_LOGIN = credentials('docker-hub')
         VERSION = sh(script: 'jq --raw-output .version package.json', returnStdout: true).trim()
         REPO = sh(script: 'basename `git rev-parse --show-toplevel`', returnStdout: true).trim()
-        REGISTRY = credentials('registry-hub')
+        REGISTRY = "roxsross12"
         SNYK_CREDENTIALS = credentials('snyk-token')
     }
 
     stages {
+        stage('Install Dependencies') {
+            agent {
+                docker {
+                    image 'node:16-alpine'
+                    args '-u root:root'
+                }
+            }
+            steps {
+                script {
+                    sh 'npm install'
+                }
+            }
+        }
         stage('Security SAST') {
             parallel {
                 stage('Gitleaks-Scan') {
@@ -111,12 +124,59 @@ pipeline {
                 }
             }
         }
-        stage('Docker Push') {
+        stage('Hub&Report') {
+                    parallel {        
+                        stage('Docker Push') {
+                            steps {
+                                script {
+                                    sh '''
+                                        docker login -u $DOCKER_HUB_LOGIN_USR -p $DOCKER_HUB_LOGIN_PSW
+                                        docker push $REGISTRY/$REPO:$VERSION
+                                    '''
+                                }
+                            }
+                        } 
+                    stage('Upload Reports') {
+                        steps {
+                            script {
+                                sh '''
+                                    echo "prueba"
+                                '''
+                            }
+                        }
+                    }
+            }
+        } 
+        stage('Deploy') {
             steps {
                 script {
                     sh '''
-                        docker login -u $DOCKER_HUB_LOGIN_USR -p $DOCKER_HUB_LOGIN_PSW
-                        docker push $REGISTRY/$REPO:$VERSION
+                        echo "prueba"
+                    '''
+                }
+            }
+        } 
+        stage('Security DAST') {
+            agent {
+                docker {
+                    image 'ghcr.io/zaproxy/zaproxy:stable'
+                    args '-u root -v ${WORKSPACE}:/zap/wrk/:rw'
+                }
+            }            
+            steps {
+                script {
+                    sh '''
+                        zap-full-scan.py -t https://roxs.295devops.com -g gen.conf -r testreport.html || true
+                    '''
+                    stash includes: 'testreport.html', name: 'testreport.html'
+                }
+            }
+        }  
+        stage('Notify') {
+            steps {
+                script {
+                    sh '''
+                        echo "prueba"
                     '''
                 }
             }
