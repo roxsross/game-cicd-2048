@@ -95,6 +95,7 @@ pipeline {
                         script {
                             sh ''' 
                                 horusec start -p /src -P "$(pwd)/src" -e="true" -o="json" -O=src/report_horusec.json || true
+                                ls -lrt
                             '''
                             stash includes: 'report_horusec.json', name: 'report_horusec.json'
                         }
