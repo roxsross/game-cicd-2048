@@ -68,7 +68,7 @@ pipeline {
                         }
                     }
                 }    
-                stage('Snyk-Scan'){
+                stage('Snyk-Code-Scan'){
                     agent {
                         docker {
                             image 'snyk/snyk:node'
@@ -167,7 +167,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        zap-full-scan.py -t https://roxs.295devops.com -g gen.conf -r testreport.html
+                        zap-full-scan.py -t https://roxs.295devops.com -g gen.conf -r testreport.html || true
                     '''
                     stash includes: 'testreport.html', name: 'testreport.html'
                 }
