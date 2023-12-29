@@ -21,14 +21,14 @@ pipeline {
         }
         stage('Build') {
             parallel {
-                stage('Docker Build') {
+                'Docker Build': {
                     steps {
                         script {
                             sh 'docker build -t $REPO:$VERSION .'
                         }
                     }
                 }
-                stage('Trivy Scan') {
+                'Trivy Scan': {
                     agent {
                         docker {
                             image 'aquasec/trivy:0.48.1'
