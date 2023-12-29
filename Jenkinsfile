@@ -84,18 +84,20 @@ pipeline {
                         }
                     }
                 }   
-                stage('Horusec-Scan') {
-                    agent {
-                        docker {
-                            image 'public.ecr.aws/roxsross/horusec:v2.9.0'
-                            args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock -v ${WORKSPACE}:/src'
-                        }
-                    }                     
+                stage('Horusec-Scan') {                   
                     steps {
                         script {
                             sh ''' 
-                                horusec start -p /src -P "$(pwd)/src" -e="true" -o="json" -O=src/report_horusec.json || true
-                                ls -lrt
+                                docker run --rm \
+                                    -v /var/run/docker.sock:/var/run/docker.sock \
+                                    -v $(pwd):/src \
+                                    public.ecr.aws/roxsross/horusec:v2.9.0 \
+                                    horusec start \
+                                    -p /src \
+                                    -P "$(pwd)/src" \
+                                    -e="true" \
+                                    -o="json" \
+                                    -O=src/report_horusec.json || true
                             '''
                             stash includes: 'report_horusec.json', name: 'report_horusec.json'
                         }
