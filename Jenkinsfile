@@ -24,7 +24,7 @@ pipeline {
         }
         stage('Security SAST') {
             parallel {
-                stage('Secrets-SCAN') {
+                stage('Gitleaks-Scan') {
                     agent {
                         docker {
                             image 'zricethezav/gitleaks'
@@ -33,18 +33,35 @@ pipeline {
                     }                    
                     steps {
                         script {
-                            sh "gitleaks detect --verbose --source . -f json -r report_gitleaks.json"
+                            sh "gitleaks detect --verbose --source . -f json -r /src/report_gitleaks.json"
                         }
                     }
                 }
-                stage('SONAR-SCAN') {
+                stage('Retire-Scan') {
+                    agent {
+                        docker {
+                            image 'node:16-alpine'
+                            args '-u root:root -v ${WORKSPACE}:/src'
+                        }
+                    }                    
                     steps {
-                        echo 'Esperando a que termine el Docker Build...'
+                        script {
+                            sh "npm install -g retire"
+                            sh "retire --outputformat json --outputpath /src/report_retire.json"
+                        }
                     }
                 }
-                stage('AUDITH-SCAN') {
+                stage('Semgrep-Scan') {
+                    agent {
+                        docker {
+                            image 'returntocorp/semgrep'
+                            args '-u root:root -v ${WORKSPACE}:/src'
+                        }
+                    }                     
                     steps {
-                        echo 'Esperando a que termine el Docker Build...'
+                        script {
+                            sh "semgrep --config=p/r2c-ci /src --output=src/report_semgrep.json"
+                        }
                     }
                 }                
             }
