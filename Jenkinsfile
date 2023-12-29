@@ -77,8 +77,8 @@ pipeline {
                     steps {
                         script {
                             sh ''' 
-                                pip3 install --upgrade njsscan >/dev/null
-                                njsscan --exit-warning -v . --json -o src/njsscan.json
+                                pip install --root-user-action=ignore --upgrade njsscan >/dev/null
+                                njsscan --exit-warning -v . --json -o src/report_njsscan.json
                             '''
                         }
                     }
