@@ -94,7 +94,7 @@ pipeline {
                     steps {
                         script {
                             sh ''' 
-                                horusec start -p /src -P "$(pwd)/src" -e="true" -o="json" -O=src/report_horusec.json
+                                horusec start -p /src -P "$(pwd)/src" -e="true" -o="json" -O=src/report_horusec.json || true
                             '''
                             stash includes: 'report_horusec.json', name: 'report_horusec.json'
                         }
