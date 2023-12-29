@@ -79,7 +79,22 @@ pipeline {
                             '''
                         }
                     }
-                }                             
+                }   
+                stage('Horusec-Scan') {
+                    agent {
+                        docker {
+                            image 'public.ecr.aws/roxsross/horusec:v2.9.0'
+                            args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock -v ${WORKSPACE}:/src'
+                        }
+                    }                     
+                    steps {
+                        script {
+                            sh ''' 
+                                horusec start -p /src -P "$(pwd)/src" -o="json" -O=src/report_horusec.json
+                            '''
+                        }
+                    }
+                }                                           
             }
         }
         stage('Docker Build') {
