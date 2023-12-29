@@ -77,7 +77,9 @@ pipeline {
                     steps {
                         script {
                             sh "snyk test --json --file=package.json --severity-threshold=high --print-deps --print-deps-uses --print-vulnerabilities --print-trace --print-all-environment"
-                
+                        }
+                    }
+                }
                 stage('Horusec-Scan') {                   
                     steps {
                         script {
