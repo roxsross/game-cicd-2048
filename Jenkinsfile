@@ -91,7 +91,7 @@ pipeline {
                                 docker run --rm \
                                     -v /var/run/docker.sock:/var/run/docker.sock \
                                     -v $(pwd):/src \
-                                    public.ecr.aws/roxsross/horusec:v2.9.0 \
+                                    horuszup/horusec-cli:v2.9.0-beta.3 \
                                     horusec start \
                                     -p /src \
                                     -P "$(pwd)/src" \
