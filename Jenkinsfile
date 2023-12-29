@@ -25,8 +25,16 @@ pipeline {
         stage('Security SAST') {
             parallel {
                 stage('Secrets-SCAN') {
+                    agent {
+                        docker {
+                            image 'zricethezav/gitleaks'
+                            args '--entrypoint="" -u root -v ${WORKSPACE}:/src'
+                        }
+                    }                    
                     steps {
-                        echo 'Realizando el Docker Build...'
+                        script {
+                            sh "gitleaks detect --verbose --source . -f json -r /src/report_gitleaks.json"
+                        }
                     }
                 }
                 stage('SONAR-SCAN') {
