@@ -60,10 +60,26 @@ pipeline {
                     }                     
                     steps {
                         script {
-                            sh "semgrep --config=p/r2c-ci /src --output=src/report_semgrep.json"
+                            sh "semgrep ci --json --exclude=package-lock.json --output /src/report_semgrep.json --config auto --config p/ci"
                         }
                     }
-                }                
+                }    
+                stage('Njscan-Scan') {
+                    agent {
+                        docker {
+                            image 'python:3.8-alpine'
+                            args '-u root:root -v ${WORKSPACE}:/src'
+                        }
+                    }                     
+                    steps {
+                        script {
+                            sh ''' 
+                                pip3 install --upgrade njsscan
+                                njsscan -o /src/report_njsscan.json /src
+                            '''
+                        }
+                    }
+                }                             
             }
         }
         stage('Docker Build') {
